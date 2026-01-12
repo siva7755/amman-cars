@@ -155,12 +155,12 @@
 
     async function generate() {
       // Background from assets/bg.jpg
-      const bgImg = await loadAsset("assets/bg.jpg");
+      const bgImg = await loadAsset("bg.jpg");
       const bgHeight = canvas.height * 0.9;
       ctx.drawImage(bgImg, 0, 0, canvas.width, bgHeight);
 
       // Logo from assets/logo.png
-      const logoImg = await loadAsset("assets/logo.jpg");
+      const logoImg = await loadAsset("logo.jpg");
       const logoWidth = 260;
       const ratio = logoImg.height / logoImg.width;
       const logoX = (canvas.width - logoWidth) / 2;
@@ -347,5 +347,6 @@ Railady, Mayiladuthurai
     }
   </script>
 </body>
+
 
 </html>
