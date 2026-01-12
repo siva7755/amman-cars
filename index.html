@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Amman Cars</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    h3 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .inputs-row,
+    .images-row,
+    .buttons-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .inputs-row input,
+    .images-row input,
+    .buttons-row button {
+      flex: 1 1 calc(50% - 8px);
+      /* two columns for larger screens */
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .images-row input {
+      flex: 1 1 calc(50% - 8px);
+    }
+
+    .buttons-row button {
+      flex: 1 1 calc(50% - 8px);
+      background: linear-gradient(90deg, #f97316, #ef4444);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    canvas {
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 18px;
+      display: block;
+    }
+
+    /* Mobile responsiveness */
+    @media screen and (max-width: 768px) {
+
+      .inputs-row input,
+      .images-row input,
+      .buttons-row button {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h3>🚗 Amman Cars 🚗</h3>
+
+    <!-- Input fields in two rows -->
+    <div class="inputs-row">
+      <input id="make" placeholder="Make" />
+      <input id="model" placeholder="Model" />
+      <input id="variant" placeholder="Variant" />
+      <input id="year" placeholder="Year" />
+      <input id="fuel" placeholder="Fuel" />
+      <input id="color" placeholder="Color" />
+    </div>
+
+    <div class="inputs-row">
+      <input id="transmission" placeholder="Transmission" />
+      <input id="insurance" placeholder="Insurance" />
+      <input id="ownership" placeholder="Ownership" />
+      <input id="odometer" placeholder="Odometer" />
+      <input id="service" placeholder="Service History" />
+      <input id="price" placeholder="Price" />
+    </div>
+
+    <!-- Vehicle images -->
+    <div class="images-row">
+      <div>
+        <label>Front Image</label><input type="file" id="img1" accept="image/*" />
+      </div>
+      <div>
+        <label>Back Image</label><input type="file" id="img2" accept="image/*" />
+      </div>
+      <div>
+        <label>Left Image</label><input type="file" id="img3" accept="image/*" />
+      </div>
+      <div>
+        <label>Right Image</label><input type="file" id="img4" accept="image/*" />
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons-row">
+      <button onclick="generate()">Generate Banner</button>
+      <button onclick="download()">Download Image</button>
+      <button onclick="shareWhatsapp()">Share on WhatsApp</button>
+    </div>
+
+    <canvas id="c" width="1080" height="1920"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("c");
+    const ctx = canvas.getContext("2d");
+
+    // Load image from assets
+    function loadAsset(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.src = src;
+      });
+    }
+
+    // Load user image files
+    function loadImage(file) {
+      return new Promise((resolve) => {
+        if (!file) {
+          resolve(null);
+          return;
+        }
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    async function generate() {
+      // Background from assets/bg.jpg
+      const bgImg = await loadAsset("assets/bg.jpg");
+      const bgHeight = canvas.height * 0.9;
+      ctx.drawImage(bgImg, 0, 0, canvas.width, bgHeight);
+
+      // Logo from assets/logo.png
+      const logoImg = await loadAsset("assets/logo.jpg");
+      const logoWidth = 260;
+      const ratio = logoImg.height / logoImg.width;
+      const logoX = (canvas.width - logoWidth) / 2;
+      const logoY = 30; // 40px from top
+      ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoWidth * ratio);
+
+      // Title gradient red->orange
+      const text = "VEHICLE FOR SALE";
+      ctx.font = "bold 80px 'italic', Arial"; // change font to stylish one
+      ctx.textAlign = "center"; // center horizontally
+      ctx.textBaseline = "middle"; // center vertically
+
+      // Gradient vertical (top to bottom)
+      const textX = canvas.width / 2;
+      const textY = 280; // vertical position
+      const grad = ctx.createLinearGradient(0, textY - 40, 0, textY + 40); // gradient spans text height
+      grad.addColorStop(0, "#ef4444"); // top red
+      grad.addColorStop(1, "#f97316"); // bottom orange
+
+      ctx.fillStyle = grad;
+      ctx.fillText(text, textX, textY);
+
+      // Points left & right
+      ctx.fillStyle = "#b8860b";
+      ctx.font = "bold 32px Arial";
+      const leftPoints = ["✔ Quality Cars", "✔ Best Price"];
+      const rightPoints = ["✔ Trusted Dealer", "✔ Verified Docs"];
+      leftPoints.forEach((p, i) => ctx.fillText(p, 360, 360 + i * 80));
+      rightPoints.forEach((p, i) => ctx.fillText(p, 780, 360 + i * 80));
+
+      // Vehicle images (large)
+      const imgFiles = [
+        document.getElementById("img1").files[0],
+        document.getElementById("img2").files[0],
+        document.getElementById("img3").files[0],
+        document.getElementById("img4").files[0],
+      ];
+      const imgs = await Promise.all(imgFiles.map((f) => loadImage(f)));
+
+      // Format: [x, y, width, height]
+      const positions = [
+        [60, 490, 460, 280], // Front
+        [580, 490, 460, 280], // Back
+        [60, 800, 460, 280], // Left
+        [580, 800, 460, 280], // Right
+      ];
+
+      imgs.forEach((im, i) => {
+        ctx.strokeStyle = "#d4af37"; // gold border
+        ctx.lineWidth = 6;
+        ctx.strokeRect(
+          positions[i][0],
+          positions[i][1],
+          positions[i][2],
+          positions[i][3]
+        );
+        if (im)
+          ctx.drawImage(
+            im,
+            positions[i][0],
+            positions[i][1],
+            positions[i][2],
+            positions[i][3]
+          );
+      });
+
+      const footerLineY1 = 1060 + 60; // Decorative line position
+      const footerPhoneY1 = footerLineY1 + 60; // Phone number position
+      const footerLocationY1 = footerPhoneY1 + 60; // Location position
+
+      // Decorative line
+      const grad1 = ctx.createLinearGradient(
+        60,
+        footerLineY1,
+        canvas.width - 60,
+        footerLineY1
+      );
+      grad1.addColorStop(0, "#FFD700"); // bright gold
+      grad1.addColorStop(0.5, "#FFA500"); // orange
+      grad1.addColorStop(1, "#FFD700");
+
+      ctx.strokeStyle = grad1;
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(60, footerLineY1);
+      ctx.lineTo(canvas.width - 60, footerLineY1);
+      ctx.stroke();
+
+      // Vehicle info
+      ctx.font = "bold 30px Arial";
+
+      let yStart = 1200;
+      const columnX = [80, 580]; // left & right columns
+      const labelWidth = 200; // space for label
+      const rowHeight = 50; // vertical spacing between rows
+
+      const data = [
+        ["Make", make.value],
+        ["Model", model.value],
+        ["Variant", variant.value],
+        ["Year", year.value],
+        ["Fuel", fuel.value],
+        ["Color", color.value],
+        ["Transmission", transmission.value],
+        ["Insurance", insurance.value],
+        ["Ownership", ownership.value],
+        ["Odometer", odometer.value + " KM"],
+        ["Service", service.value],
+        ["Price", price.value],
+      ];
+
+      // Loop through data, 2 columns
+      for (let i = 0; i < data.length; i++) {
+        const col = i % 2; // 0 = left, 1 = right
+        const row = Math.floor(i / 2);
+        const xLabel = columnX[col];
+        const xValue = xLabel + labelWidth;
+        const y = yStart + row * rowHeight;
+
+        // Label
+        ctx.fillStyle = "#d4af37"; // gold
+        ctx.textAlign = "left";
+        ctx.fillText(data[i][0], xLabel, y);
+
+        // Value
+        ctx.fillStyle = "#000"; // black
+        ctx.fillText(data[i][1] || "--", xValue, y);
+      }
+
+      // Decorative line
+      // Define spacing variables
+      const footerLineY = 1460 + 60; // Decorative line position
+      const footerPhoneY = footerLineY + 60; // Phone number position
+      const footerLocationY = footerPhoneY + 60; // Location position
+
+      // Decorative line
+      ctx.strokeStyle = grad1;
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.moveTo(60, footerLineY);
+      ctx.lineTo(canvas.width - 60, footerLineY);
+      ctx.stroke();
+
+      // Footer - Phone number
+      ctx.fillStyle = "#523600";
+      ctx.font = "bold 60px Arial";
+      ctx.textAlign = "center"; // horizontally center
+      ctx.fillText(
+        "📞 9345637050 / 9750037755",
+        canvas.width / 2,
+        footerPhoneY
+      );
+
+      // Footer - Location
+      ctx.fillStyle = "#555";
+      ctx.font = "42px Arial";
+      ctx.fillText(
+        "📍 Railady, Mayiladuthurai",
+        canvas.width / 2,
+        footerLocationY
+      );
+    }
+
+    // Download PNG
+    function download() {
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/png");
+      a.download = "amman-cars-banner.png";
+      a.click();
+    }
+
+    // WhatsApp share
+    function shareWhatsapp() {
+      const text = `Amman Cars
+${make.value} ${model.value} (${year.value})
+Fuel: ${fuel.value}
+Odometer: ${odometer.value} " KM"
+Insurance: ${insurance.value}
+Price: ₹${price.value}
+9345637050 / 9750037755
+Railady, Mayiladuthurai
+`;
+      window.open("https://wa.me/?text=" + encodeURIComponent(text));
+    }
+  </script>
+</body>
+
+</html>
