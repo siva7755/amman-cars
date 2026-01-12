@@ -39,6 +39,7 @@
     .images-row input,
     .buttons-row button {
       flex: 1 1 calc(50% - 8px);
+      /* two columns for larger screens */
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
@@ -154,16 +155,16 @@
 
     async function generate() {
       // Background from assets/bg.jpg
-      const bgImg = await loadAsset("bg.jpg");
+      const bgImg = await loadAsset("assets/bg.jpg");
       const bgHeight = canvas.height * 0.9;
       ctx.drawImage(bgImg, 0, 0, canvas.width, bgHeight);
 
       // Logo from assets/logo.png
-      const logoImg = await loadAsset("logo.jpg");
-      const logoWidth = 260;
+      const logoImg = await loadAsset("assets/logo.jpg");
+      const logoWidth = 280;
       const ratio = logoImg.height / logoImg.width;
       const logoX = (canvas.width - logoWidth) / 2;
-      const logoY = 30; // 40px from top
+      const logoY = 20; // 40px from top
       ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoWidth * ratio);
 
       // Title gradient red->orange
@@ -177,13 +178,13 @@
       const textY = 280; // vertical position
       const grad = ctx.createLinearGradient(0, textY - 40, 0, textY + 40); // gradient spans text height
       grad.addColorStop(0, "#ef4444"); // top red
-      grad.addColorStop(1, "#f97316"); // bottom orange
+      grad.addColorStop(1, "#FF8C00"); // bottom orange
 
       ctx.fillStyle = grad;
       ctx.fillText(text, textX, textY);
 
       // Points left & right
-      ctx.fillStyle = "#b8860b";
+      ctx.fillStyle = "#darkorange";
       ctx.font = "bold 32px Arial";
       const leftPoints = ["✔ Quality Cars", "✔ Best Price"];
       const rightPoints = ["✔ Trusted Dealer", "✔ Verified Docs"];
@@ -208,7 +209,7 @@
       ];
 
       imgs.forEach((im, i) => {
-        ctx.strokeStyle = "#d4af37"; // gold border
+        ctx.strokeStyle = "#FFD700"; // gold border
         ctx.lineWidth = 6;
         ctx.strokeRect(
           positions[i][0],
@@ -280,7 +281,7 @@
         const y = yStart + row * rowHeight;
 
         // Label
-        ctx.fillStyle = "#d4af37"; // gold
+        ctx.fillStyle = "#D2691E"; // gold
         ctx.textAlign = "left";
         ctx.fillText(data[i][0], xLabel, y);
 
@@ -304,7 +305,7 @@
       ctx.stroke();
 
       // Footer - Phone number
-      ctx.fillStyle = "#523600";
+      ctx.fillStyle = "#FF8C00";
       ctx.font = "bold 60px Arial";
       ctx.textAlign = "center"; // horizontally center
       ctx.fillText(
@@ -314,7 +315,7 @@
       );
 
       // Footer - Location
-      ctx.fillStyle = "#555";
+      ctx.fillStyle = "#8B4513";
       ctx.font = "42px Arial";
       ctx.fillText(
         "📍 Railady, Mayiladuthurai",
@@ -336,7 +337,7 @@
       const text = `Amman Cars
 ${make.value} ${model.value} (${year.value})
 Fuel: ${fuel.value}
-Odometer: ${odometer.value} " KM"
+Odometer: ${odometer.value}  KM
 Insurance: ${insurance.value}
 Price: ₹${price.value}
 9345637050 / 9750037755
@@ -347,6 +348,4 @@ Railady, Mayiladuthurai
   </script>
 </body>
 
-
 </html>
-
